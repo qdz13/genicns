@@ -1,6 +1,7 @@
 #!/bin/bash
 
 progname=genicns
+version=1.1.0
 
 if ! [[ "$OSTYPE" =~ ^darwin ]]; then
 	echo "This program is only works on macOS." >&2
@@ -13,6 +14,7 @@ usage() {
 
 	Options:
 	  -h, --help     Display this help message and exit
+	  -v, --version  Display version information and exit
 	  -o, --output   Specify the name of the output file
 	  -s, --strip    Strip all metadata (ExifTool is required)
 
@@ -40,6 +42,10 @@ while [ $# -ne 0 ]; do
 		case "$1" in
 			-h|--help)
 				usage
+				exit
+				;;
+			-v|--version)
+				echo "$progname $version"
 				exit
 				;;
 			-o|--output)
