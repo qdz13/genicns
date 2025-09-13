@@ -17,7 +17,9 @@ usage() {
 	  -s, --strip    Strip all metadata (ExifTool is required)
 
 	Supported input formats:
-	  PNG
+	  PNG (Native support)
+	  SVG (Inkscape is required)
+	  Other image formats (ImageMagick is required)
 	EOF
 }
 
@@ -77,11 +79,14 @@ else
 		if ! [ -f "$f" ]; then
 			echo "$progname: No such file: \"$f\"" >&2
 			exit 1
-		elif [ "$(file -Lb --mime-type -- "$f")" != "image/png" ]; then
-			echo "$progname: The format of input file is unsupported" >&2
-			exit 1
 		fi
 	done
+fi
+
+if [ -z "$output" ]; then
+	output=$(basename -- "$f" | sed 's/\.[^\.]*$/.icns/')
+elif ! [[ "$output" =~ \.icns$ ]]; then
+	output="$output.icns"
 fi
 
 tmpdir="/tmp/icon.iconset"
@@ -93,15 +98,34 @@ cleanup() { rm -rf "$tmpdir"; }
 trap 'cleanup' HUP INT PIPE QUIT TERM
 
 for f in "${inputs[@]}"; do
-	if [ -z "$output" ]; then
-		out=$(basename -- "$f" | sed 's/\.[^\.]*$/.icns/')
-	elif [[ "$output" =~ \.icns$ ]]; then
-		out="$output"
-	else
-		out="$output.icns"
-	fi
-
+	[ -e "$tmpdir" ] && cleanup
 	mkdir "$tmpdir"
+
+	case "$(file -Lb --mime-type -- "$f")" in
+		image/png) ;;
+		image/svg+xml)
+			if command -v inkscape &>/dev/null; then
+				inkscape -w 1024 -h 1024 -o "$tmpdir/tmp_${f##*/}.png" -- "$f" || continue
+				f="$tmpdir/tmp_${f##*/}.png"
+			else
+				echo "$progname: Inkscape is required to convert SVG image to PNG" >&2
+				continue
+			fi
+			;;
+		image/*)
+			if command -v magick &>/dev/null; then
+				magick -quiet -- "$f" "$tmpdir/tmp_${f##*/}.png" || continue
+				f="$_"
+			else
+				echo "$progname: ImageMagick is required to convert image to PNG" >&2
+				continue
+			fi
+			;;
+		*)
+			echo "$progname: The format of input file is unsupported" >&2
+			continue
+			;;
+	esac
 
 	for i in 1024 512 256 128 64 32 16; do
 		sips "$f" -Z $i -o "$tmpdir/icon_${i}x$i.png" >/dev/null
@@ -110,13 +134,13 @@ for f in "${inputs[@]}"; do
 
 	if [ "$strip" = true ]; then
 		if command -v exiftool &>/dev/null; then
-			exiftool -q -all= "$tmpdir"/* -overwrite_original
+			exiftool -q -all= "$tmpdir"/icon_*.png -overwrite_original
 		else
 			echo "$progname: ExifTool is required to strip metadata" >&2
 		fi
 	fi
 
-	iconutil -c icns "$tmpdir" -o "$out"
-
-	cleanup
+	iconutil -c icns "$tmpdir" -o "$output"
 done
+
+cleanup

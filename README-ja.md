@@ -9,6 +9,7 @@ genicnsはICNSファイルを生成するシンプルなツールです。
 * Bash
 
 ### 任意
+* ImageMagick (画像形式をPNGに変換するため)
 * ExifTool (メタデータを消去するため)
 
 ## インストール

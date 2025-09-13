@@ -9,6 +9,7 @@ genicns is a simple command-line tool that generate ICNS file.
 * Bash
 
 ### Optional
+* ImageMagick (To convert image formats)
 * ExifTool (To strip metadata)
 
 ## Installation
