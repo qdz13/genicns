@@ -1,0 +1,122 @@
+#!/bin/bash
+
+progname=genicns
+
+if ! [[ "$OSTYPE" =~ ^darwin ]]; then
+	echo "This program is only works on macOS." >&2
+	exit 1
+fi
+
+usage() {
+	echo "Usage: $progname [OPTIONS] [FILES]"
+	cat >&2 <<-'EOF'
+
+	Options:
+	  -h, --help     Display this help message and exit
+	  -o, --output   Specify the name of the output file
+	  -s, --strip    Strip all metadata (ExifTool is required)
+
+	Supported input formats:
+	  PNG
+	EOF
+}
+
+if [ $# -eq 0 ]; then
+	usage
+	exit 1
+fi
+
+declare -a inputs
+output=""
+strip=false
+optend=false
+while [ $# -ne 0 ]; do
+	if [ "$optend" = true ]; then
+		inputs+=("$1")
+		shift
+	else
+		case "$1" in
+			-h|--help)
+				usage
+				exit
+				;;
+			-o|--output)
+				shift
+				if [ $# -eq 0 ]; then
+					usage
+					exit 1
+				fi
+				output="$1"
+				shift
+				;;
+			-s|--strip)
+				strip=true
+				shift
+				;;
+			--)
+				optend=true
+				shift
+				;;
+			-*)
+				echo "$progname: Unknown option: \"$1\"" >&2
+				exit 1
+				;;
+			*)
+				inputs+=("$1")
+				shift
+				;;
+		esac
+	fi
+done
+
+if [ ${#inputs[@]} -eq 0 ]; then
+	usage
+	exit 1
+else
+	for f in "${inputs[@]}"; do
+		if ! [ -f "$f" ]; then
+			echo "$progname: No such file: \"$f\"" >&2
+			exit 1
+		elif [ "$(file -Lb --mime-type -- "$f")" != "image/png" ]; then
+			echo "$progname: The format of input file is unsupported" >&2
+			exit 1
+		fi
+	done
+fi
+
+tmpdir="/tmp/icon.iconset"
+if [ -e "$tmpdir" ]; then
+	echo "$progname: File already exists: $tmpdir" >&2
+	exit 1
+fi
+cleanup() { rm -rf "$tmpdir"; }
+trap 'cleanup' HUP INT PIPE QUIT TERM
+
+for f in "${inputs[@]}"; do
+	if [ -z "$output" ]; then
+		out=$(basename -- "$f" | sed 's/\.[^\.]*$/.icns/')
+	elif [[ "$output" =~ \.icns$ ]]; then
+		out="$output"
+	else
+		out="$output.icns"
+	fi
+
+	mkdir "$tmpdir"
+
+	for i in 1024 512 256 128 64 32 16; do
+		sips "$f" -Z $i -o "$tmpdir/icon_${i}x$i.png" >/dev/null
+		((i != 16)) && cp "$_" "$tmpdir/icon_$((i/2))x$((i/2))@2x.png"
+	done
+
+	if [ "$strip" = true ]; then
+		if command -v exiftool &>/dev/null; then
+			exiftool -q -all= "$tmpdir"/* -overwrite_original
+		else
+			echo "$progname: ExifTool is required to strip metadata" >&2
+		fi
+	fi
+
+	iconutil -c icns "$tmpdir" -o "$out"
+
+	cleanup
+done
