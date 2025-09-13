@@ -1,4 +1,6 @@
 # genicns
+English | [日本語](README-ja.md)
+
 genicns is a simple command-line tool that generate ICNS file.
 
 ## Dependencies
