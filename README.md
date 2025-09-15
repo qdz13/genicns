@@ -10,6 +10,7 @@ genicns is a simple command-line tool that generate ICNS file.
 
 ### Optional
 * ImageMagick (To convert image formats)
+* Inkscape (To convert SVG to PNG)
 * ExifTool (To strip metadata)
 
 ## Installation

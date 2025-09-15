@@ -10,6 +10,7 @@ genicnsはICNSファイルを生成するシンプルなツールです。
 
 ### 任意
 * ImageMagick (画像形式をPNGに変換するため)
+* Inkscape (SVGをPNGに変換するため)
 * ExifTool (メタデータを消去するため)
 
 ## インストール
