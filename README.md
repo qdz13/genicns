@@ -22,6 +22,13 @@ sudo make install
 > [!NOTE]
 > This program is only works on macOS.
 
+If you want to install all dependencies, I recommend using Homebrew.
+```sh
+brew up
+brew install imagemagick exiftool
+brew install --cask inkscape
+```
+
 ## Basic Usage
 ```sh
 genicns input.png -o output.icns

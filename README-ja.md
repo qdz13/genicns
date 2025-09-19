@@ -22,6 +22,13 @@ sudo make install
 > [!NOTE]
 > このプログラムはmacOS専用です。
 
+依存関係を全てインストールしたい場合、Homebrewの使用をおすすめします。
+```sh
+brew up
+brew install imagemagick exiftool
+brew install --cask inkscape
+```
+
 ## 基本的な使い方
 ```sh
 genicns input.png -o output.icns
