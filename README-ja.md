@@ -15,7 +15,7 @@ genicnsはICNSファイルを生成するシンプルなツールです。
 
 ## インストール
 ```sh
-git clone https://codeberg.org/qdz13/genicns
+git clone https://codeberg.org/qdz13/genicns.git
 cd genicns
 sudo make install
 ```

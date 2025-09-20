@@ -15,7 +15,7 @@ genicns is a simple command-line tool that generate ICNS file.
 
 ## Installation
 ```sh
-git clone https://codeberg.org/qdz13/genicns
+git clone https://codeberg.org/qdz13/genicns.git
 cd genicns
 sudo make install
 ```
