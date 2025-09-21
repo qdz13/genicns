@@ -1,7 +1,7 @@
 #!/bin/bash
 
 progname=genicns
-version=1.1.0
+version=1.2.0
 
 if ! [[ "$OSTYPE" =~ ^darwin ]]; then
 	echo "This program is only works on macOS." >&2
@@ -9,14 +9,15 @@ if ! [[ "$OSTYPE" =~ ^darwin ]]; then
 fi
 
 usage() {
-	echo "Usage: $progname [hosv] [file ...]"
+	echo "Usage: $progname [hlosv] [file ...]"
 	cat >&2 <<-'EOF'
 
 	Options:
-	  -h, --help     Display this help message and exit
-	  -v, --version  Display version information and exit
 	  -o, --output   Specify the name of the output file
 	  -s, --strip    Strip all metadata (ExifTool is required)
+	  -l, --leave    Leave .iconset directory
+	  -h, --help     Display this help message and exit
+	  -v, --version  Display version information and exit
 
 	Supported input formats:
 	  PNG (Native support)
@@ -33,6 +34,7 @@ fi
 declare -a inputs
 output=""
 strip=false
+leave=false
 optend=false
 while [ $# -ne 0 ]; do
 	if [ "$optend" = true ]; then
@@ -40,14 +42,6 @@ while [ $# -ne 0 ]; do
 		shift
 	else
 		case "$1" in
-			-h|--help)
-				usage
-				exit
-				;;
-			-v|--version)
-				echo "$progname $version"
-				exit
-				;;
 			-o|--output)
 				shift
 				if [ $# -eq 0 ]; then
@@ -60,6 +54,18 @@ while [ $# -ne 0 ]; do
 			-s|--strip)
 				strip=true
 				shift
+				;;
+			-l|--leave)
+				leave=true
+				shift
+				;;
+			-h|--help)
+				usage
+				exit
+				;;
+			-v|--version)
+				echo "$progname $version"
+				exit
 				;;
 			--)
 				optend=true
@@ -95,12 +101,18 @@ elif ! [[ "$output" =~ \.icns$ ]]; then
 	output="$output.icns"
 fi
 
-tmpdir="/tmp/icon.iconset"
+if [ "$leave" = true ]; then
+	tmpdir="icon.iconset"
+else
+	tmpdir="/tmp/icon.iconset"
+fi
+
 if [ -e "$tmpdir" ]; then
 	echo "$progname: File already exists: $tmpdir" >&2
 	exit 1
 fi
-cleanup() { rm -rf "$tmpdir"; }
+
+cleanup() { [ "$leave" = false ] && rm -rf "$tmpdir"; }
 trap 'cleanup' HUP INT PIPE QUIT TERM
 
 for f in "${inputs[@]}"; do

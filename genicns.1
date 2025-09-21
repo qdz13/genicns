@@ -6,7 +6,7 @@
 .Nd Generate ICNS file from image file
 .Sh SYNOPSIS
 .Nm genicns
-.Op Fl hosv
+.Op Fl hlosv
 .Op Ar file ...
 .Sh DESCRIPTION
 .Nm
@@ -18,6 +18,8 @@ Supported options:
 Specify the name of the output file
 .It Fl s , Fl Fl strip
 Strip all metadata (ExifTool is required)
+.It Fl l , Fl Fl leave
+Leave .iconset directory
 .It Fl h , Fl Fl help
 Display help message
 .It Fl v , Fl Fl version
