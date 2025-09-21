@@ -1,0 +1,35 @@
+.Dd September 21, 2025
+.Dt GENICNS 1
+.Os
+.Sh NAME
+.Nm genicns
+.Nd Generate ICNS file from image file
+.Sh SYNOPSIS
+.Nm genicns
+.Op Fl hosv
+.Op Ar file ...
+.Sh DESCRIPTION
+.Nm
+is a simple command-line tool that generate ICNS file.
+.Pp
+Supported options:
+.Bl -tag -width Ds
+.It Fl o Ar file , Fl Fl output Ar file
+Specify the name of the output file
+.It Fl s , Fl Fl strip
+Strip all metadata (ExifTool is required)
+.It Fl h , Fl Fl help
+Display help message
+.It Fl v , Fl Fl version
+Display version information
+.El
+.Pp
+Supported options:
+.Bl -tag -width Ds
+.It PNG
+Native support
+.It SVG
+Inkscape is required
+.It Other image formats
+ImageMagick is required
+.El
