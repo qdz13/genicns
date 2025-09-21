@@ -9,7 +9,7 @@ if ! [[ "$OSTYPE" =~ ^darwin ]]; then
 fi
 
 usage() {
-	echo "Usage: $progname [hlosv] [file ...]"
+	echo "Usage: $progname [hlsv] [-o file] [file ...]"
 	cat >&2 <<-'EOF'
 
 	Options:
