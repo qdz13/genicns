@@ -34,3 +34,5 @@ sudo make install
 ```sh
 genicns input.png -o output.icns
 ```
+
+Run `man genicns` to see man page.
