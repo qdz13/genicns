@@ -1,7 +1,7 @@
 #!/bin/bash
 
 progname=genicns
-version=1.2.0
+version=1.3.0
 
 if ! [[ "$OSTYPE" =~ ^darwin ]]; then
 	echo "This program is only works on macOS." >&2
@@ -14,7 +14,7 @@ usage() {
 
 	Options:
 	  -o, --output   Specify the name of the output file
-	  -s, --strip    Strip all metadata (ExifTool is required)
+	  -s, --strip    Strip all metadata (ImageMagick is required)
 	  -l, --leave    Leave .iconset directory
 	  -h, --help     Display this help message and exit
 	  -v, --version  Display version information and exit
@@ -151,10 +151,10 @@ for f in "${inputs[@]}"; do
 	done
 
 	if [ "$strip" = true ]; then
-		if command -v exiftool &>/dev/null; then
-			exiftool -q -all= "$tmpdir"/icon_*.png -overwrite_original
+		if command -v magick &>/dev/null; then
+			magick mogrify -strip "$tmpdir"/icon_*.png
 		else
-			echo "$progname: ExifTool is required to strip metadata" >&2
+			echo "$progname: ImageMagick is required to strip metadata" >&2
 		fi
 	fi
 

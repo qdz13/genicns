@@ -9,9 +9,8 @@ genicns is a simple command-line tool that generate ICNS file.
 * Bash
 
 ### Optional
-* ImageMagick (To convert image formats)
+* ImageMagick (To convert image formats and/or strip metadata)
 * Inkscape (To convert SVG to PNG)
-* ExifTool (To strip metadata)
 
 ## Installation
 ```sh
@@ -26,7 +25,7 @@ sudo make install
 > If you want to install all dependencies, I recommend using Homebrew.
 > ```sh
 > brew up
-> brew install imagemagick exiftool
+> brew install imagemagick
 > brew install --cask inkscape
 > ```
 
