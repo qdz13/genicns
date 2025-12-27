@@ -21,14 +21,6 @@ sudo make install
 > [!NOTE]
 > This program is only works on macOS.
 
-> [!TIP]
-> If you want to install all dependencies, I recommend using Homebrew.
-> ```sh
-> brew up
-> brew install imagemagick
-> brew install --cask inkscape
-> ```
-
 ## Basic Usage
 ```sh
 genicns input.png -o output.icns
