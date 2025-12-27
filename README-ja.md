@@ -9,8 +9,8 @@ genicnsはICNSファイルを生成するシンプルなツールです。
 * Bash
 
 ### 任意
-* ImageMagick (画像形式をPNGに変換するか、メタデータを消去するため)
-* Inkscape (SVGをPNGに変換するため)
+* [ImageMagick](https://imagemagick.org/script/download.php#macos) (画像形式をPNGに変換するか、メタデータを消去するため)
+* [Inkscape](https://inkscape.org/ja/release/) (SVGをPNGに変換するため)
 
 ## インストール
 ```sh
